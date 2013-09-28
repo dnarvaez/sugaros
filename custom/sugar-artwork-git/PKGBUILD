@@ -7,8 +7,8 @@ pkgdesc="Sugar artwork"
 arch=('i686' 'x86_64')
 url="http://sugarlabs.org/"
 license=('LGPL')
-depends=('python2' 'gtk3' 'icon-slicer')
-makedepends=('git')
+depends=('python2' 'gtk3' 'gtk2')
+makedepends=('git' 'icon-slicer' 'icon-naming-utils')
 source=("$pkgname"::'git://github.com/dnarvaez/sugar-artwork.git#branch=arch')
 md5sums=('SKIP')
 

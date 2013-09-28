@@ -1,0 +1,65 @@
+#!/bin/bash
+
+script_path=$(readlink -f $0)
+base_dir=$(dirname $script_path)
+build_dir=$base_dir/build
+out_dir=$base_dir/out
+repo_dir=$out_dir/repo
+rootfs_dir=$out_dir/rootfs
+conf_dir=$base_dir/conf
+
+die() {
+    echo "$1"
+    exit 1
+}
+
+build() {
+    for path in $@
+    do
+        pushd $path
+        set -e
+        makechrootpkg -r $build_dir -- -i
+        set +e
+        popd
+    done
+}
+
+make_chroot() {
+    mkdir -p $build_dir
+
+    if [ ! -d $build_dir/root ]; then
+        mkarchroot $build_dir/root base-devel
+    fi
+}
+
+make_repo() {
+    local packages=$(find build -name '*.pkg.tar.xz')
+
+    rm -rf $repo_dir
+    mkdir -p $repo_dir
+
+    cp $packages $repo_dir
+
+    repo-add $repo_dir/sugaros.db.tar.gz $repo_dir/*.pkg.tar.xz
+}
+
+compose() {
+    pacstrap $rootfs_dir -C $conf_dir/pacman.conf sugar-runner
+}
+
+(( EUID != 0 )) && die 'This script must be run as root.'
+
+export SUGAROS_DIR=$base_dir
+
+make_chroot
+
+build aur/icon-slicer \
+      custom/sugar-artwork-git \
+      custom/sugar-datastore-git \
+      custom/sugar-toolkit-gtk3-git \
+      custom/sugar-git \
+      custom/sugar-runner-git
+
+make_repo
+
+compose
