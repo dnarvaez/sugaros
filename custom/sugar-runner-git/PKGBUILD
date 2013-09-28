@@ -1,15 +1,15 @@
 # Maintainer: Daniel Narvaez <dwnarvaez@gmail.com> 
 
-pkgname=sugar-toolkit-gtk3-git
-pkgver=v0.99.2.93.g9c7ca84
+pkgname=sugar-runner-git
+pkgver=v0.99.3.2.g960c534
 pkgrel=1
-pkgdesc="Sugar toolkit (gtk3)"
+pkgdesc="Sugar runner"
 arch=('i686' 'x86_64')
 url="http://sugarlabs.org/"
-license=('LGPL')
-depends=('python2' 'gtk3')
+license=('GPL')
+depends=('python2')
 makedepends=('git')
-source=("$pkgname"::'git://github.com/dnarvaez/sugar-toolkit-gtk3.git#branch=arch')
+source=("$pkgname"::'git://github.com/sugarlabs/sugar-runner.git')
 md5sums=('SKIP')
 
 pkgver() {
@@ -21,6 +21,7 @@ pkgver() {
 build() {
     cd ${srcdir}/${pkgname}
     ./autogen.sh --prefix=/usr
+    make
 }
 
 package() {
