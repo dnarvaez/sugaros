@@ -79,7 +79,7 @@ compose() {
 make_chroot
 
 build aur/icon-slicer \
-      custom/python2-gwebsockets \
+      custom/python2-gwebsockets-git \
       custom/sugar-artwork-git \
       custom/sugar-datastore-git \
       custom/sugar-toolkit-gtk3-git \
