@@ -7,7 +7,8 @@ pkgdesc="Sugar shell"
 arch=('i686' 'x86_64')
 url="http://sugarlabs.org/"
 license=('GPL')
-depends=('python2' 'gtk3' 'sugar-toolkit-gtk3-git')
+depends=('python2' 'gtk3' 'sugar-toolkit-gtk3-git' 'gstreamer' 'libwnck3'
+         'libsoup')
 makedepends=('git')
 source=("$pkgname"::'git://github.com/dnarvaez/sugar.git#branch=arch')
 md5sums=('SKIP')
