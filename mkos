@@ -67,8 +67,28 @@ compose() {
 
     qemu-img create $img_path 5G
     mkfs.ext4 -F $img_path
+
     mount -o loop $img_path $mnt_dir
     cp -ar $rootfs_dir/* $mnt_dir
+
+    local user_name=sugaros
+
+    arch-chroot $mnt_dir useradd $user_name -m
+
+    local tty_service_dir=$mnt_dir/etc/systemd/system/getty@tty1.service.d
+
+    mkdir $tty_service_dir
+    cat > $tty_service_dir/autologin.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --autologin $user_name --noclear %I 38400 linux
+EOF
+
+    echo "[[ -z \$DISPLAY && \$XDG_VTNR -eq 1 ]] && exec startx" \
+        > $mnt_dir/home/$user_name/.bash_profile
+
+    echo "exec sugar" > $mnt_dir/home/$user_name/.xinitrc
+
     umount $mnt_dir
 }
 
