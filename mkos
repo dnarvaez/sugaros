@@ -68,7 +68,7 @@ compose() {
     qemu-img create $img_path 5G
     mkfs.ext4 -F $img_path
     mount -o loop $img_path $mnt_dir
-    cp -r $rootfs_dir/* $mnt_dir
+    cp -ar $rootfs_dir/* $mnt_dir
     umount $mnt_dir
 }
 
