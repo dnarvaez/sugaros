@@ -11,7 +11,7 @@ depends=('python2' 'gtk3' 'librsvg' 'gconf' 'alsa-utils' 'sugar-artwork-git'
          'sugar-datastore-git' 'gobject-introspection' 'xorg-server'
          'python2-decorator' 'python2-dbus' 'python2-gobject'
          'telepathy-gabble' 'telepathy-salut' 'telepathy-mission-control'
-         "python2-telepathy' 'python2-dateutil')
+         'python2-telepathy' 'python2-dateutil')
 makedepends=('git' 'intltool')
 source=("$pkgname"::'git://github.com/dnarvaez/sugar-toolkit-gtk3.git#branch=arch')
 md5sums=('SKIP')
