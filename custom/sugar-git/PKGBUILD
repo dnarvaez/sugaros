@@ -11,6 +11,7 @@ depends=('python2' 'gtk3' 'sugar-toolkit-gtk3-git' 'gstreamer' 'libwnck3'
          'libsoup' 'gtksourceview3' 'libxklavier' 'python2-gwebsockets-git'
          'metacity')
 makedepends=('git')
+install=sugar.install
 source=("$pkgname"::'git://github.com/dnarvaez/sugar.git#branch=arch')
 md5sums=('SKIP')
 
@@ -22,7 +23,9 @@ pkgver() {
 
 build() {
   cd ${srcdir}/${pkgname}
-  ./autogen.sh --prefix=/usr --disable-schemas-compile
+  ./autogen.sh --prefix=/usr \
+               --sysconfdir=/etc \
+               --disable-schemas-compile
   make
 }
 
@@ -35,7 +38,7 @@ package() {
 
   install -m755 -d "${pkgdir}/usr/share/gconf/schemas"
 
-  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/sugar.schemas" \
+  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname}.schemas" \
     --domain sugar ${pkgdir}/etc/gconf/schemas/*.schemas
 
   rm -f ${pkgdir}/etc/gconf/schemas/*.schemas
