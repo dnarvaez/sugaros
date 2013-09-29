@@ -13,18 +13,17 @@ source=("$pkgname"::'git://github.com/dnarvaez/gwebsockets.git')
 md5sums=('SKIP')
 
 pkgver() {
-    cd "$pkgname"
-    local ver="$(git describe --tags --long)"
-    printf "%s" "${ver//-/.}"
+  cd "$pkgname"
+  local ver="$(git describe --tags --long)"
+  printf "%s" "${ver//-/.}"
 }
 
 build() {
-    cd ${srcdir}/${pkgname}
-    python2 ./setup.py build
+  cd ${srcdir}/${pkgname}
+  python2 ./setup.py build
 }
 
 package() {
-    cd ${srcdir}/${pkgname}
-
-    python2 ./setup.py install --root=${pkgdir}
+  cd ${srcdir}/${pkgname}
+  python2 ./setup.py install --root=${pkgdir}
 }

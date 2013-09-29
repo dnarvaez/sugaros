@@ -13,17 +13,18 @@ source=("$pkgname"::'git://github.com/dnarvaez/sugar-artwork.git#branch=arch')
 md5sums=('SKIP')
 
 pkgver() {
-    cd "$pkgname"
-    local ver="$(git describe --tags --long)"
-    printf "%s" "${ver//-/.}"
+  cd "$pkgname"
+  local ver="$(git describe --tags --long)"
+  printf "%s" "${ver//-/.}"
 }
 
 build() {
-    cd ${srcdir}/${pkgname}
-    ./autogen.sh --prefix=/usr
+  cd ${srcdir}/${pkgname}
+  ./autogen.sh --prefix=/usr
+  make
 }
 
 package() {
-    cd ${srcdir}/${pkgname}
-    make DESTDIR="$pkgdir" install
+  cd ${srcdir}/${pkgname}
+  make DESTDIR="$pkgdir" install
 }

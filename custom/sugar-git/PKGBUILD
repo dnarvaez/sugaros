@@ -15,21 +15,28 @@ source=("$pkgname"::'git://github.com/dnarvaez/sugar.git#branch=arch')
 md5sums=('SKIP')
 
 pkgver() {
-    cd "$pkgname"
-    local ver="$(git describe --tags --long)"
-    printf "%s" "${ver//-/.}"
+  cd "$pkgname"
+  local ver="$(git describe --tags --long)"
+  printf "%s" "${ver//-/.}"
 }
 
 build() {
-    cd ${srcdir}/${pkgname}
-    ./autogen.sh --prefix=/usr --disable-schemas-compile
-    make
+  cd ${srcdir}/${pkgname}
+  ./autogen.sh --prefix=/usr --disable-schemas-compile
+  make
 }
 
 package() {
-    cd ${srcdir}/${pkgname}
+  cd ${srcdir}/${pkgname}
 
-    export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
-    make DESTDIR="$pkgdir" install
-    unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
+  export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
+  make DESTDIR="$pkgdir" install
+  unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
+
+  install -m755 -d "${pkgdir}/usr/share/gconf/schemas"
+
+  gconf-merge-schema "${pkgdir}/usr/share/gconf/schemas/${pkgname}.schemas" \
+    --domain sugar ${pkgdir}/etc/gconf/schemas/*.schemas
+
+  rm -f ${pkgdir}/etc/gconf/schemas/*.schemas
 }
