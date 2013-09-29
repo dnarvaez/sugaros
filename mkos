@@ -91,11 +91,11 @@ DEFAULT sugaros
 LABEL   sugaros
 SAY     Sugar OS
 LINUX   /boot/vmlinuz-linux
-APPEND  root=/dev/disk/by-uuid/$(blkid -s UUID -o value /dev/loop0) ro
+APPEND  root=/dev/sda ro
 INITRD  /boot/initramfs-linux-fallback.img
 EOF
 
-    echo "UUID=$UUID / ext4 defaults 0 1" >> $mnt_dir/etc/fstab
+    echo "/dev/sda / ext4 defaults 0 1" >> $mnt_dir/etc/fstab
 
     umount $mnt_dir
 }
@@ -112,7 +112,8 @@ build aur/icon-slicer \
       custom/sugar-datastore-git \
       custom/sugar-toolkit-gtk3-git \
       custom/sugar-git \
-      custom/sugar-runner-git
+      custom/sugar-runner-git \
+      custom/sugar-browse-git
 
 make_repo
 
