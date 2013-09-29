@@ -63,15 +63,15 @@ compose() {
     pacstrap -c -d -C $pacman_conf_path $rootfs_dir $PACKAGES
 
     local img_path=$out_dir/os.img
-    local mnt_dir=/mnt
+    local mnt_dir=/mnt/sugaros
+    local user_name=sugaros
 
     qemu-img create $img_path 5G
     mkfs.ext4 -F $img_path
 
+    mkdir -p $mnt_dir
     mount -o loop $img_path $mnt_dir
     cp -ar $rootfs_dir/* $mnt_dir
-
-    local user_name=sugaros
 
     arch-chroot $mnt_dir useradd $user_name -m
 
