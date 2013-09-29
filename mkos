@@ -8,7 +8,6 @@ build_dir=$base_dir/build
 stamps_dir=$build_dir/stamps
 out_dir=$base_dir/out
 repo_dir=$out_dir/repo
-rootfs_dir=$out_dir/rootfs
 conf_dir=$base_dir/conf
 
 die() {
@@ -57,20 +56,18 @@ compose() {
     local pacman_conf_path=$build_dir/pacman.conf
     sed -e "s:@REPO_DIR@:$repo_dir:" $conf_dir/pacman.conf > $pacman_conf_path
 
-    mkdir -p $rootfs_dir
-    pacstrap -c -d -C $pacman_conf_path $rootfs_dir $PACKAGES
-
     local img_path=$out_dir/os.img
     local mnt_dir=/mnt/sugaros
     local user_name=sugaros
 
+    rm -f $img_path
     qemu-img create $img_path 5G
     mkfs.ext4 -F $img_path
 
     mkdir -p $mnt_dir
     mount -o loop $img_path $mnt_dir
-    cp -ar $rootfs_dir/* $mnt_dir
 
+    pacstrap -c -C $pacman_conf_path $mnt_dir $PACKAGES
     arch-chroot $mnt_dir useradd $user_name -m
 
     local tty_service_dir=$mnt_dir/etc/systemd/system/getty@tty1.service.d
@@ -86,6 +83,19 @@ EOF
         > $mnt_dir/home/$user_name/.bash_profile
 
     echo "exec sugar" > $mnt_dir/home/$user_name/.xinitrc
+
+    extlinux --install $mnt_dir/boot
+
+    cat > $mnt_dir/boot/extlinux.conf << EOF
+DEFAULT sugaros
+LABEL   sugaros
+SAY     Sugar OS
+LINUX   /boot/vmlinuz-linux
+APPEND  root=/dev/disk/by-uuid/$(blkid -s UUID -o value /dev/loop0) ro
+INITRD  /boot/initramfs-linux-fallback.img
+EOF
+
+    echo "UUID=$UUID / ext4 defaults 0 1" >> $mnt_dir/etc/fstab
 
     umount $mnt_dir
 }
