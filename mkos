@@ -105,6 +105,8 @@ EOF
     echo "/dev/sda / ext4 defaults 0 1" >> $mnt_dir/etc/fstab
 
     umount $mnt_dir
+
+    xz $img_path
 }
 
 usage() {
