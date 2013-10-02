@@ -5,6 +5,7 @@ set -e
 script_path=$(readlink -f $0)
 base_dir=$(dirname $script_path)
 build_dir=$base_dir/build
+pkg_dir=$build_dir/pkg
 stamps_dir=$build_dir/stamps
 out_dir=$base_dir/out
 repo_dir=$out_dir/repo
@@ -17,6 +18,7 @@ die() {
 
 build() {
     mkdir -p $stamps_dir
+    mkdir -p $build_dir/{pkg,log,src}
 
     for path in $@
     do
@@ -25,7 +27,12 @@ build() {
 
         if [ ! -f $stamp_path ]; then
             pushd $path
+
+            PKGDEST=$pkg_dir \
+            LOGDEST=$build_dir/log \
+            SRCDEST=$build_dir/src \
             makechrootpkg -r $build_dir -- -i
+
             popd
 
             touch $stamp_path
@@ -42,7 +49,7 @@ make_chroot() {
 }
 
 make_repo() {
-    local packages=$(find aur custom -name '*.pkg.tar.xz')
+    local packages=$(find $pkg_dir -name '*.pkg.tar.xz')
 
     rm -rf $repo_dir
     mkdir -p $repo_dir
@@ -101,6 +108,8 @@ EOF
 }
 
 (( EUID != 0 )) && die 'This script must be run as root.'
+
+unset SUDO_USER
 
 . $conf_dir/os.conf
 
