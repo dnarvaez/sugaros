@@ -107,11 +107,32 @@ EOF
     umount $mnt_dir
 }
 
+usage() {
+    echo 'Flags:'
+    echo '-h    This help'
+    echo '-c    Make a clean build'
+
+    exit 1
+}
+
+clean=false
+
+while getopts 'ch' arg; do
+    case "$arg" in
+        h) usage ;;
+        c) clean=true ;;
+    esac
+done
+
 (( EUID != 0 )) && die 'This script must be run as root.'
 
 unset SUDO_USER
 
 . $conf_dir/os.conf
+
+if $clean; then
+    rm -rf $build_dir
+fi
 
 make_chroot
 
